@@ -12,7 +12,11 @@
     "expo": "~47.0.12",
     "expo-status-bar": "~1.4.2",
     "react": "18.1.0",
-    "react-native": "0.70.5"
+    "react-native": "0.70.5",
+    "react-native-circle-slider": "^2.9.0",
+    "react-native-material-kit": "^0.6.0-beta.1",
+    "react-native-webview": "^11.26.1",
+    "react-nest-thermostat": "^1.0.8"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
