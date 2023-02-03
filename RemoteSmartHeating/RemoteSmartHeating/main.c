@@ -16,6 +16,7 @@
 char target = 30;
 char current_tempreture = 20;
 double alpha = 0.4;
+double callibration_factor = 4.2;
 char controller_value = 50;
 
 void updateControllerValue(current_tempreture,target)
@@ -29,25 +30,20 @@ void ADC_Init()
 {
 	DDRA=0x0;			/* Make ADC port as input */
 	ADCSRA = 0x87;			/* Enable ADC, fr/128  */
-	ADMUX = 0x40;			/* Vref: Avcc, ADC channel: 0 */
+	ADMUX = 0x60;			/* Vref: Avcc, ADC channel: 0  and use left adjustment*/
 	
 }
 
-int ADC_Read(char channel)
+void getTempreture()
 {
-	int Ain,AinLow;
 	
-	ADMUX=ADMUX|(channel & 0x0f);	/* Set input channel to read */
 
 	ADCSRA |= (1<<ADSC);		/* Start conversion */
 	while((ADCSRA&(1<<ADIF))==0);	/* Monitor end of conversion interrupt */
 	
 	_delay_us(10);
-	AinLow = (int)ADCL;		/* Read lower byte*/
-	Ain = (int)ADCH*256;		/* Read higher 2 bits and 
-					Multiply with weight */
-	Ain = Ain + AinLow;				
-	return(Ain);			/* Return digital value*/
+	
+	current_tempreture = (char)(callibration_factor * ADCH);/* Return digital value*/
 }
 
 
@@ -78,9 +74,9 @@ int main()
 	{
 	
 		//LCD_Command(0xc4);	/* LCD16x2 cursor position */
-		value=ADC_Read(0);	/* Read ADC channel 0 */
+		getTempreture();	/* Read ADC channel 0 */
 		updateControllerValue(current_tempreture,target);
-		itoa(value,String,10);	/* Integer to string conversion */ 
+		itoa(current_tempreture,String,10);	/* Integer to string conversion */ 
 		//UART_TxChar(controller_value)
 		//LCD_String(String);						
 		//LCD_String("  ");			
